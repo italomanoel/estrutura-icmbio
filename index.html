@@ -50,6 +50,7 @@ header{flex-wrap:wrap}
 #res li.msg:hover{background:none}
 #stage.voo{transition:transform .35s ease}
 @media (prefers-reduced-motion:reduce){#stage.voo{transition:none}}
+header button.modo{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -59,10 +60,10 @@ header{flex-wrap:wrap}
     <input id="q" type="search" placeholder="Buscar por sigla ou nome (ex.: CGGE ou Governança)" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="res" aria-label="Buscar unidade por sigla ou nome">
     <ul id="res" role="listbox" hidden></ul>
   </div>
+  <button id="modo" type="button" class="modo"></button>
   <button id="mais" title="Aproximar" aria-label="Aproximar">+</button>
   <button id="menos" title="Afastar" aria-label="Afastar">−</button>
   <button id="ajusta" title="Mostrar tudo">Ver tudo</button>
-  <a href="estrutura-horizontal.html"><button id="" title="Mostrar estrutura na horizontal">Ver estrutura na horizontal</button></a>
 </header>
 <main id="view"><div id="stage"><svg id="links"></svg></div></main>
 <footer>
@@ -70,9 +71,13 @@ header{flex-wrap:wrap}
   <div id="legenda"></div>
 </footer>
 <script>
-const DADOS = [{"id": "presi", "pai": null, "sigla": "PRESI", "nome": "Presidência", "tipo": "presidencia"}, {"id": "secet", "pai": "presi", "sigla": "SECET", "nome": "Secretaria Executiva da Comissão de Ética", "tipo": "orgao"}, {"id": "pfe", "pai": "presi", "sigla": "PFE", "nome": "Procuradoria Federal Especializada", "tipo": "orgao"}, {"id": "asspres", "pai": "presi", "sigla": "Assessoria do Presidente", "nome": "Assessoria do Presidente", "tipo": "orgao"}, {"id": "corr", "pai": "presi", "sigla": "CORR", "nome": "Corregedoria", "tipo": "orgao"}, {"id": "diap", "pai": "corr", "sigla": "DIAP", "nome": "Divisão de Atos e Procedimentos", "tipo": "div"}, {"id": "daprev", "pai": "corr", "sigla": "DAPREV", "nome": "Divisão de Admissibilidade e Prevenção", "tipo": "div"}, {"id": "audit", "pai": "presi", "sigla": "AUDIT", "nome": "Auditoria Interna", "tipo": "orgao"}, {"id": "dpa", "pai": "audit", "sigla": "DPA", "nome": "Divisão de Processos de Auditoria", "tipo": "div"}, {"id": "ouv", "pai": "presi", "sigla": "OUV", "nome": "Ouvidoria", "tipo": "orgao"}, {"id": "dic", "pai": "ouv", "sigla": "DIC", "nome": "Divisão de Informações ao Cidadão", "tipo": "div"}, {"id": "gabin", "pai": "presi", "sigla": "GABIN", "nome": "Gabinete", "tipo": "orgao"}, {"id": "cga", "pai": "gabin", "sigla": "CGA", "nome": "Coordenação de Gestão Administrativa do Gabinete", "tipo": "coord"}, {"id": "dpl", "pai": "gabin", "sigla": "DPL", "nome": "Divisão de Assuntos Parlamentares", "tipo": "div"}, {"id": "dai", "pai": "gabin", "sigla": "DAI", "nome": "Divisão de Assuntos Internacionais", "tipo": "div"}, {"id": "seag", "pai": "gabin", "sigla": "SEAG", "nome": "Serviço de Apoio ao Gabinete", "tipo": "serv"}, {"id": "cgge", "pai": "presi", "sigla": "CGGE", "nome": "Coordenação-Geral de Governança e Gestão Estratégica", "tipo": "cg"}, {"id": "cgov", "pai": "cgge", "sigla": "CGOV", "nome": "Coordenação de Governança", "tipo": "coord"}, {"id": "dpae", "pai": "cgge", "sigla": "DPAE", "nome": "Divisão de Planejamento e Avaliação da Estratégia", "tipo": "div"}, {"id": "dinfo", "pai": "cgge", "sigla": "DINFO", "nome": "Divisão de Gestão da Informação Institucional", "tipo": "div"}, {"id": "cgcs", "pai": "presi", "sigla": "CGCS", "nome": "Coordenação-Geral de Comunicação Social", "tipo": "cg"}, {"id": "ccom", "pai": "cgcs", "sigla": "CCOM", "nome": "Coordenação de Comunicação Social", "tipo": "coord"}, {"id": "disat", "pai": "presi", "sigla": "DISAT", "nome": "Diretoria de Ações Socioambientais e Consolidação Territorial em Unidades de Conservação", "tipo": "diretoria"}, {"id": "diman", "pai": "presi", "sigla": "DIMAN", "nome": "Diretoria de Criação e Manejo de Unidades de Conservação", "tipo": "diretoria"}, {"id": "dibio", "pai": "presi", "sigla": "DIBIO", "nome": "Diretoria de Pesquisa, Avaliação e Monitoramento da Biodiversidade", "tipo": "diretoria"}, {"id": "diplan", "pai": "presi", "sigla": "DIPLAN", "nome": "Diretoria de Planejamento, Administração e Logística", "tipo": "diretoria"}, {"id": "cotat", "pai": "disat", "sigla": "COTAT", "nome": "Coordenação de Assessoria Técnico e Administrativo", "tipo": "coord"}, {"id": "dap-cotat", "pai": "cotat", "sigla": "DAP-COTAT", "nome": "Divisão de Apoio Técnico", "tipo": "div"}, {"id": "cgpt", "pai": "disat", "sigla": "CGPT", "nome": "Coordenação-Geral de Articulação de Políticas Públicas e Economias da Sociobiodiversidade", "tipo": "cg"}, {"id": "cobem", "pai": "cgpt", "sigla": "COBEM", "nome": "Coordenação de Informações para o Bem-Viver", "tipo": "coord"}, {"id": "copact", "pai": "cgpt", "sigla": "COPACT", "nome": "Coordenação de Articulação de Políticas Públicas", "tipo": "coord", "aliases": ["COPCT"]}, {"id": "coecos", "pai": "cgpt", "sigla": "COECOS", "nome": "Coordenação de Promoção das Economias da Sociobiodiversidade", "tipo": "coord"}, {"id": "dimaco", "pai": "coecos", "sigla": "DIMACO", "nome": "Divisão de Manejo Florestal Comunitário", "tipo": "div"}, {"id": "copesc", "pai": "cgpt", "sigla": "COPESC", "nome": "Coordenação de Pesca Artesanal", "tipo": "coord"}, {"id": "cgsam", "pai": "disat", "sigla": "CGSAM", "nome": "Coordenação-Geral de Gestão Socioambiental", "tipo": "cg"}, {"id": "cocar", "pai": "cgsam", "sigla": "COCAR", "nome": "Coordenação de Caracterização de Povos e Comunidades em Unidades de Conservação", "tipo": "coord"}, {"id": "coedu", "pai": "cgsam", "sigla": "COEDU", "nome": "Coordenação de Educação Ambiental e Formação Cidadã", "tipo": "coord"}, {"id": "cocep", "pai": "cgsam", "sigla": "COCEP", "nome": "Coordenação de Promoção da Participação Social", "tipo": "coord"}, {"id": "divol", "pai": "cocep", "sigla": "DIVOL", "nome": "Divisão de Programas de Voluntariado", "tipo": "div"}, {"id": "cogcot", "pai": "cgsam", "sigla": "COGCOT", "nome": "Coordenação de Gestão de Conflitos em Interfaces Territoriais", "tipo": "coord", "aliases": ["COCDOT"]}, {"id": "dimoa", "pai": "cogcot", "sigla": "DIMOA", "nome": "Divisão de Monitoramento e Acompanhamento de Acordos", "tipo": "div"}, {"id": "cgter", "pai": "disat", "sigla": "CGTER", "nome": "Coordenação-Geral de Consolidação Territorial", "tipo": "cg"}, {"id": "ccol", "pai": "cgter", "sigla": "CCOL", "nome": "Coordenação de Consolidação de Limites", "tipo": "coord"}, {"id": "sop-cgter", "pai": "cgter", "sigla": "SOP-CGTER", "nome": "Serviço de Apoio Operacional", "tipo": "serv"}, {"id": "cocef", "pai": "cgter", "sigla": "COCEF", "nome": "Coordenação de Análise e Gestão de Dados Fundiários", "tipo": "coord"}, {"id": "codim", "pai": "cgter", "sigla": "CODIM", "nome": "Coordenação de Desapropriação de Imóveis", "tipo": "coord"}, {"id": "coin", "pai": "cgter", "sigla": "COIN", "nome": "Coordenação de Incorporação de Imóveis", "tipo": "coord"}, {"id": "diter", "pai": "coin", "sigla": "DITER", "nome": "Divisão de Incorporação de Terras Públicas", "tipo": "div"}, {"id": "cotam", "pai": "diman", "sigla": "COTAM", "nome": "Coordenação de Assessoramento Técnico e Administrativo", "tipo": "coord"}, {"id": "dat-cotam", "pai": "cotam", "sigla": "DAT/COTAM", "nome": "Divisão de Apoio Técnico", "tipo": "div"}, {"id": "cgcap", "pai": "diman", "sigla": "CGCAP", "nome": "Coordenação-Geral de Criação, Planejamento e Avaliação de Unidades de Conservação", "tipo": "cg"}, {"id": "cocuc", "pai": "cgcap", "sigla": "COCUC", "nome": "Coordenação de Criação de UC's", "tipo": "coord"}, {"id": "coman", "pai": "cgcap", "sigla": "COMAN", "nome": "Coordenação de Plano de Manejo de UC", "tipo": "coord"}, {"id": "dmop", "pai": "cgcap", "sigla": "DMOP", "nome": "Divisão de Monitoramento de Planos de Manejo", "tipo": "div"}, {"id": "dad-cgcap", "pai": "cgcap", "sigla": "DAD-CGCAP", "nome": "Divisão de Apoio Administrativo", "tipo": "div"}, {"id": "dat-cgcap", "pai": "cgcap", "sigla": "DAT-CGCAP", "nome": "Divisão de Apoio Técnico", "tipo": "div"}, {"id": "dgti", "pai": "cgcap", "sigla": "DGTI", "nome": "Divisão de Gestão Territorial Integrada", "tipo": "div"}, {"id": "cgeup", "pai": "diman", "sigla": "CGEUP", "nome": "Coordenação-Geral de Uso Público e Serviços Ambientais", "tipo": "cg"}, {"id": "covis", "pai": "cgeup", "sigla": "COVIS", "nome": "Coordenação de Planejamento da Visitação", "tipo": "coord"}, {"id": "coest", "pai": "cgeup", "sigla": "COEST", "nome": "Coordenação de Estruturação e Qualificação da Visitação", "tipo": "coord"}, {"id": "codel", "pai": "cgeup", "sigla": "CODEL", "nome": "Coordenação de Estruturação de Delegação de Serviços de Apoio à Visitação", "tipo": "coord"}, {"id": "coged", "pai": "cgeup", "sigla": "COGED", "nome": "Coordenação de Gestão de Instrumentos de Delegações", "tipo": "coord"}, {"id": "dtuc", "pai": "cgeup", "sigla": "DTUC", "nome": "Divisão de Turismo de Base Comunitária", "tipo": "div"}, {"id": "dsam", "pai": "cgeup", "sigla": "DSAM", "nome": "Divisão de Serviços Ambientais", "tipo": "div"}, {"id": "dflo", "pai": "cgeup", "sigla": "DFLO", "nome": "Divisão de Negócios Florestais", "tipo": "div"}, {"id": "dginf", "pai": "cgeup", "sigla": "DGINF", "nome": "Divisão de Gestão da Informação de Uso Público", "tipo": "div"}, {"id": "cgpro", "pai": "diman", "sigla": "CGPRO", "nome": "Coordenação-Geral de Proteção", "tipo": "cg"}, {"id": "cofis", "pai": "cgpro", "sigla": "COFIS", "nome": "Coordenação de Fiscalização", "tipo": "coord"}, {"id": "dint", "pai": "cofis", "sigla": "DINT", "nome": "Divisão de Inteligência Ambiental", "tipo": "div"}, {"id": "dgeo", "pai": "cgpro", "sigla": "DGEO", "nome": "Divisão de Monitoramento Geoespacial", "tipo": "div"}, {"id": "ciam", "pai": "cgpro", "sigla": "CIAM", "nome": "Coordenação de Apuração de Infrações Ambientais", "tipo": "coord"}, {"id": "djai", "pai": "cgpro", "sigla": "DJAI", "nome": "Divisão de Julgamento de Autos de Infração", "tipo": "div"}, {"id": "copro", "pai": "cgpro", "sigla": "COPRO", "nome": "Coordenação de Operação da Proteção Ambiental", "tipo": "coord"}, {"id": "diva", "pai": "copro", "sigla": "DIVA", "nome": "Divisão Aérea", "tipo": "div"}, {"id": "sepro", "pai": "copro", "sigla": "SEPRO", "nome": "Serviço de Operacionalização da Proteção", "tipo": "serv"}, {"id": "cemif", "pai": "cgpro", "sigla": "CEMIF", "nome": "Centro Especializado em Manejo Integrado do Fogo", "tipo": "centro"}, {"id": "dico", "pai": "cemif", "sigla": "DICO", "nome": "Divisão de Gestão do Conhecimento", "tipo": "div"}, {"id": "cotab", "pai": "dibio", "sigla": "COTAB", "nome": "Coordenação de Assessoramento Técnico e Administrativo", "tipo": "coord"}, {"id": "dad-cotab", "pai": "cotab", "sigla": "DAD-COTAB", "nome": "Divisão de Apoio Administrativo", "tipo": "div"}, {"id": "centros-dibio", "pai": "dibio", "sigla": null, "nome": "Centros (14)", "tipo": "grupo"}, {"id": "cemave", "pai": "centros-dibio", "sigla": "CEMAVE", "nome": "Centro Nacional de Pesquisa e Conservação de Aves Silvestres", "tipo": "centro"}, {"id": "ran", "pai": "centros-dibio", "sigla": "RAN", "nome": "Centro Nacional de Pesquisa e Conservação de Répteis e Anfíbios", "tipo": "centro"}, {"id": "cenap", "pai": "centros-dibio", "sigla": "CENAP", "nome": "Centro Nacional de Pesquisa e Conservação de Mamíferos Carnívoros", "tipo": "centro"}, {"id": "cpb", "pai": "centros-dibio", "sigla": "CPB", "nome": "Centro Nacional de Pesquisa e Conservação de Primatas e Xenartros", "tipo": "centro"}, {"id": "cecav", "pai": "centros-dibio", "sigla": "CECAV", "nome": "Centro Nacional de Pesquisa e Conservação de Cavernas", "tipo": "centro", "obs": "Imagem da DIBIO mostra CECAVE; sigla CECAV conforme JSON enviado"}, {"id": "cepta", "pai": "centros-dibio", "sigla": "CEPTA", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Aquática Continental", "tipo": "centro"}, {"id": "cepam", "pai": "centros-dibio", "sigla": "CEPAM", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Amazônica", "tipo": "centro"}, {"id": "cbc", "pai": "centros-dibio", "sigla": "CBC", "nome": "Centro Nacional de Pesquisa e Conservação em Biodiversidade e Restauração Ecológica", "tipo": "centro"}, {"id": "cepsul", "pai": "centros-dibio", "sigla": "CEPSUL", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Marinha do Sudeste e Sul", "tipo": "centro"}, {"id": "tamar", "pai": "centros-dibio", "sigla": "TAMAR", "nome": "Centro Nacional de Pesquisa e Conservação de Tartarugas Marinhas e da Biodiversidade Marinha do Leste", "tipo": "centro"}, {"id": "cma", "pai": "centros-dibio", "sigla": "CMA", "nome": "Centro Nacional de Pesquisa e Conservação de Mamíferos Aquáticos", "tipo": "centro"}, {"id": "cepene", "pai": "centros-dibio", "sigla": "CEPENE", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Marinha do Nordeste", "tipo": "centro"}, {"id": "cepnor", "pai": "centros-dibio", "sigla": "CEPNOR", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Marinha do Norte", "tipo": "centro"}, {"id": "cnpt", "pai": "centros-dibio", "sigla": "CNPT", "nome": "Centro Nacional de Pesquisa e Conservação da Sociobiodiversidade Associada a Povos e Comunidades Tradicionais", "tipo": "centro"}, {"id": "cgimp", "pai": "dibio", "sigla": "CGIMP", "nome": "Coordenação-Geral de Avaliação de Impactos", "tipo": "cg"}, {"id": "coad", "pai": "cgimp", "sigla": "COAD", "nome": "Coordenação de Apoio às Autorizações Diretas", "tipo": "coord"}, {"id": "coginf", "pai": "cgimp", "sigla": "COGINF", "nome": "Coordenação de Gestão da Informação para o Licenciamento Ambiental", "tipo": "coord"}, {"id": "comali", "pai": "cgimp", "sigla": "COMALI", "nome": "Coordenação de Manifestação para o Licenciamento Ambiental", "tipo": "coord"}, {"id": "cgpeq", "pai": "dibio", "sigla": "CGPEQ", "nome": "Coordenação-Geral de Pesquisa e Monitoramento da Biodiversidade", "tipo": "cg"}, {"id": "copeg", "pai": "cgpeq", "sigla": "COPEG", "nome": "Coordenação de Pesquisa e Gestão da Informação Sobre Biodiversidade", "tipo": "coord"}, {"id": "dit-copeg", "pai": "copeg", "sigla": "DIT-COPEG", "nome": "Divisão de Inovação Tecnológica", "tipo": "div"}, {"id": "coece", "pai": "cgpeq", "sigla": "COECE", "nome": "Coordenação de Emergências Climáticas e Epizootia", "tipo": "coord"}, {"id": "comob", "pai": "cgpeq", "sigla": "COMOB", "nome": "Coordenação de Monitoramento da Biodiversidade", "tipo": "coord"}, {"id": "cgcon", "pai": "dibio", "sigla": "CGCON", "nome": "Coordenação-Geral de Estratégias Para a Conservação", "tipo": "cg"}, {"id": "cmeei", "pai": "cgcon", "sigla": "CMEEI", "nome": "Coordenação de Manejo de Espécies Exóticas Invasoras", "tipo": "coord"}, {"id": "copan", "pai": "cgcon", "sigla": "COPAN", "nome": "Coordenação de Identificação e Planejamento de Ações para Conservação", "tipo": "coord"}, {"id": "dicon", "pai": "copan", "sigla": "DICON", "nome": "Divisão de Apoio à Implementação de Ações de Conservação", "tipo": "div"}, {"id": "cofau", "pai": "cgcon", "sigla": "COFAU", "nome": "Coordenação de Avaliação do Risco de Extinção de Espécies da Fauna", "tipo": "coord"}, {"id": "coesp", "pai": "cgcon", "sigla": "COESP", "nome": "Coordenação de Análises Geoespaciais para Conservação de Espécies", "tipo": "coord"}, {"id": "coasa", "pai": "diplan", "sigla": "COASA", "nome": "Coordenação de Assessoramento Administrativo", "tipo": "coord"}, {"id": "dap", "pai": "coasa", "sigla": "DAP", "nome": "Divisão de Apoio Técnico", "tipo": "div"}, {"id": "cgti", "pai": "diplan", "sigla": "CGTI", "nome": "Coordenação-Geral de Tecnologia da Informação", "tipo": "cg"}, {"id": "cosd", "pai": "cgti", "sigla": "COSD", "nome": "Coordenação de Soluções Digitais", "tipo": "coord"}, {"id": "sinf", "pai": "cosd", "sigla": "SINF", "nome": "Serviço de Sistema de Informação", "tipo": "serv"}, {"id": "sisup", "pai": "cgti", "sigla": "SISUP", "nome": "Serviço de Infraestrutura e Suporte", "tipo": "serv"}, {"id": "cgadm", "pai": "diplan", "sigla": "CGADM", "nome": "Coordenação-Geral de Gestão Administrativa", "tipo": "cg"}, {"id": "clog", "pai": "cgadm", "sigla": "CLOG", "nome": "Coordenação de Logística", "tipo": "coord"}, {"id": "dfrot", "pai": "clog", "sigla": "DFROT", "nome": "Divisão de Gestão de Frotas", "tipo": "div"}, {"id": "dpat-patrimonio", "pai": "clog", "sigla": "DPAT", "nome": "Divisão de Patrimônio", "tipo": "div"}, {"id": "copea", "pai": "cgadm", "sigla": "COPEA", "nome": "Coordenação de Obras e Projetos de Engenharia e Arquitetura", "tipo": "coord"}, {"id": "dfpea", "pai": "copea", "sigla": "DFPEA", "nome": "Divisão de Fiscalização de Obras e Projetos de Engenharia e Arquitetura", "tipo": "div"}, {"id": "colic", "pai": "cgadm", "sigla": "COLIC", "nome": "Coordenação de Licitações e Contratos", "tipo": "coord"}, {"id": "dfis", "pai": "colic", "sigla": "DFIS", "nome": "Divisão de Fiscalização Administrativa", "tipo": "div"}, {"id": "dllc", "pai": "colic", "sigla": "DLLC", "nome": "Divisão de Licitações", "tipo": "div"}, {"id": "dcad", "pai": "colic", "sigla": "DCAD", "nome": "Divisão de Contratos Administrativos", "tipo": "div"}, {"id": "dconv", "pai": "cgadm", "sigla": "DCONV", "nome": "Divisão de Convênios e Apoio às Parcerias", "tipo": "div"}, {"id": "sepad", "pai": "colic", "sigla": "SEPAD", "nome": "Setor de Penalidades Administrativas", "tipo": "setor", "obs": "Não consta nas imagens; incluído conforme informação do usuário"}, {"id": "cgfin", "pai": "diplan", "sigla": "CGFIN", "nome": "Coordenação-Geral de Finanças e Arrecadação", "tipo": "cg"}, {"id": "cont", "pai": "cgfin", "sigla": "CONT", "nome": "Coordenação de Contabilidade", "tipo": "coord"}, {"id": "seacon", "pai": "cont", "sigla": "SEACON", "nome": "Serviço de Análise Contábil", "tipo": "serv"}, {"id": "cofin", "pai": "cgfin", "sigla": "COFIN", "nome": "Coordenação de Finanças e Arrecadação", "tipo": "coord"}, {"id": "diarr-1", "pai": "cofin", "sigla": "DIARR", "nome": "Divisão de Arrecadação", "tipo": "div"}, {"id": "diarr-2", "pai": "cofin", "sigla": "DIARR", "nome": "Divisão de Arrecadação", "tipo": "div"}, {"id": "coor", "pai": "cgfin", "sigla": "COOR", "nome": "Coordenação de Orçamento", "tipo": "coord"}, {"id": "deor", "pai": "coor", "sigla": "DEOR", "nome": "Divisão de Execução Orçamentária", "tipo": "div"}, {"id": "cgplan", "pai": "diplan", "sigla": "CGPLAN", "nome": "Coordenação-Geral de Planejamento e Gestão de Recursos Externos", "tipo": "cg"}, {"id": "cogep", "pai": "cgplan", "sigla": "COGEP", "nome": "Coordenação de Gestão de Projetos e Parcerias", "tipo": "coord"}, {"id": "sejud", "pai": "cogep", "sigla": "SEJUD", "nome": "Serviço de Execuções de Projetos e Parcerias", "tipo": "serv"}, {"id": "dpar", "pai": "cogep", "sigla": "DPAR", "nome": "Divisão de Projetos e Parcerias", "tipo": "div"}, {"id": "comag", "pai": "cgplan", "sigla": "COMAG", "nome": "Coordenação de Monitoramento e Avaliação da Gestão de UC", "tipo": "coord"}, {"id": "seprex", "pai": "comag", "sigla": "SEPREX", "nome": "Serviço de Planejamento de Recursos Externos", "tipo": "serv"}, {"id": "cocam", "pai": "cgplan", "sigla": "COCAM", "nome": "Coordenação de Compensação Ambiental", "tipo": "coord"}, {"id": "decam", "pai": "cocam", "sigla": "DECAM", "nome": "Divisão de Execução de Compensação Ambiental", "tipo": "div"}, {"id": "dececam", "pai": "cocam", "sigla": "DECECAM", "nome": "Divisão de Celebração e Acompanhamento Financeiro da Compensação Ambiental", "tipo": "div"}, {"id": "cggp", "pai": "diplan", "sigla": "CGGP", "nome": "Coordenação-Geral de Gestão de Pessoas", "tipo": "cg"}, {"id": "coape", "pai": "cggp", "sigla": "COAPE", "nome": "Coordenação de Administração de Pessoal", "tipo": "coord"}, {"id": "dpat-agentes", "pai": "coape", "sigla": "DPAT", "nome": "Divisão de Agentes Temporários Ambientais", "tipo": "div"}, {"id": "dipag", "pai": "coape", "sigla": "DIPAG", "nome": "Divisão de Pagamento", "tipo": "div"}, {"id": "dicape", "pai": "coape", "sigla": "DICAPE", "nome": "Divisão de Cadastro", "tipo": "div"}, {"id": "cocage", "pai": "cggp", "sigla": "COCAGE", "nome": "Coordenação de Carreira e Gestão Estratégica de Pessoas", "tipo": "coord"}, {"id": "seqvt", "pai": "cocage", "sigla": "SEQVT", "nome": "Serviço de Qualidade de Vida", "tipo": "serv"}, {"id": "dgeft", "pai": "cocage", "sigla": "DGEFT", "nome": "Divisão de Gestão da Força de Trabalho", "tipo": "div"}, {"id": "acadebio", "pai": "cggp", "sigla": "ACADEBio", "nome": "Centro de Formação em Conservação da Biodiversidade", "tipo": "centro"}, {"id": "deape", "pai": "acadebio", "sigla": "DEAPE", "nome": "Divisão de Educação Corporativa e Desenvolvimento de Pessoas", "tipo": "div"}, {"id": "dgadm-acadebio", "pai": "acadebio", "sigla": "DGADM/ACADEBio", "nome": "Divisão de Gestão Administrativa", "tipo": "div"}, {"id": "sead", "pai": "acadebio", "sigla": "SEAD", "nome": "Setor de Educação à Distância", "tipo": "setor"}, {"id": "seinf", "pai": "acadebio", "sigla": "SEINF", "nome": "Setor de Infraestrutura", "tipo": "setor"}];
+/* Os dados ficam em dados.json (mesma pasta). Para mudar a estrutura, edite apenas o JSON. */
+function iniciar(DADOS) {
 
-const W = 200, H = 50, GX = 56, GY = 10;
+const W = 200, H = 50;          /* tamanho do nó */
+const GXL = 20, GYL = 44;       /* entre blocos lado a lado / entre pai e filhos em linha */
+const IND = 28, GYP = 8;        /* recuo e espaço dos filhos empilhados */
+const LINHA = new Set(['presidencia', 'diretoria']); /* filhos lado a lado; os demais ficam empilhados abaixo do pai */
 const view = document.getElementById('view'), stage = document.getElementById('stage'), svg = document.getElementById('links');
 const NS = 'http://www.w3.org/2000/svg';
 const rotulo = n => n.sigla || n.nome;
@@ -82,39 +87,95 @@ const por = new Map(DADOS.map(n => [n.id, Object.assign({}, n, {f: []})]));
 let raiz;
 por.forEach(n => n.pai ? por.get(n.pai).f.push(n) : (raiz = n));
 
-let folha = 0, maxD = 0;
-(function posicionar(n, d) {
-  n.d = d; maxD = Math.max(maxD, d);
-  if (!n.f.length) { n.y = folha++ * (H + GY); return; }
-  n.f.forEach(c => posicionar(c, d + 1));
-  n.y = (n.f[0].y + n.f[n.f.length - 1].y) / 2;
-})(raiz, 0);
+/* desenho: nós e fios são criados uma vez; as posições dependem do modo escolhido */
+const botaoModo = document.getElementById('modo');
+let modo = 'horizontal'; /* modo inicial: 'horizontal' (de cima para baixo) ou 'vertical' (da esquerda para a direita) */
+let larg = 0, alt = 0, maxD = 0;
+raiz.d = 0;
+(function prof(n) { maxD = Math.max(maxD, n.d); n.f.forEach(c => { c.d = n.d + 1; prof(c); }); })(raiz);
 
-/* desenho */
-const larg = (maxD + 1) * (W + GX), alt = folha * (H + GY);
-svg.setAttribute('width', larg); svg.setAttribute('height', alt);
 por.forEach(n => {
-  n.x = n.d * (W + GX);
   const b = document.createElement('button');
+  b.type = 'button';
   b.className = 'no t-' + n.tipo;
-  b.style.left = n.x + 'px'; b.style.top = n.y + 'px';
   b.title = [n.sigla, n.nome].filter(Boolean).join(' – ');
   const s = document.createElement('b'); s.textContent = rotulo(n); b.appendChild(s);
   if (n.nome && n.nome !== n.sigla) { const t = document.createElement('span'); t.textContent = n.nome; b.appendChild(t); }
   b.addEventListener('click', () => { if (!arrastou) selecionar(n); });
   n.el = b; stage.appendChild(b);
-  if (n.pai) {
-    const p = por.get(n.pai), m = p.x + W + GX / 2;
-    const l = document.createElementNS(NS, 'path');
-    l.setAttribute('d', `M${p.x + W} ${p.y + H / 2} H${m} V${n.y + H / 2} H${n.x}`);
-    svg.appendChild(l); n.fio = l;
-  }
+  if (n.pai) { n.fio = document.createElementNS(NS, 'path'); svg.appendChild(n.fio); }
 });
 
+/* modo horizontal: Presidência e Diretorias abrem os filhos lado a lado; os demais níveis empilham abaixo do pai */
+function layoutH() {
+  function medir(n) {
+    if (!n.f.length) return n.b = {w: W, h: H, soma: W};
+    const bs = n.f.map(medir);
+    if (LINHA.has(n.tipo)) {
+      const soma = bs.reduce((a, b) => a + b.w, 0) + GXL * (bs.length - 1);
+      return n.b = {w: Math.max(soma, W), h: H + GYL + Math.max(...bs.map(b => b.h)), soma};
+    }
+    return n.b = {w: Math.max(W, ...bs.map(b => IND + b.w)), h: bs.reduce((a, b) => a + GYP + b.h, H)};
+  }
+  function colocar(n, x, y) { /* (x, y) é o canto superior esquerdo do bloco */
+    n.y = y;
+    if (!n.f.length) { n.x = x; return; }
+    if (LINHA.has(n.tipo)) {
+      let cx = x + (n.b.w - n.b.soma) / 2;
+      n.f.forEach(c => { colocar(c, cx, y + H + GYL); cx += c.b.w + GXL; });
+      n.x = (n.f[0].x + n.f[n.f.length - 1].x) / 2;
+    } else {
+      n.x = x;
+      let cy = y + H + GYP;
+      n.f.forEach(c => { colocar(c, x + IND, cy); cy += c.b.h + GYP; });
+    }
+  }
+  medir(raiz); colocar(raiz, 0, 0);
+  return {w: raiz.b.w, h: raiz.b.h};
+}
+
+/* modo vertical: Presidência à esquerda, um nível por coluna */
+const GXV = 56, GYV = 10;
+function layoutV() {
+  let folha = 0;
+  (function pos(n) {
+    n.x = n.d * (W + GXV);
+    if (!n.f.length) { n.y = folha++ * (H + GYV); return; }
+    n.f.forEach(pos);
+    n.y = (n.f[0].y + n.f[n.f.length - 1].y) / 2;
+  })(raiz);
+  return {w: (maxD + 1) * (W + GXV) - GXV, h: folha * (H + GYV) - GYV};
+}
+
+function aplicarLayout() {
+  const m = modo === 'horizontal' ? layoutH() : layoutV();
+  larg = m.w; alt = m.h;
+  svg.setAttribute('width', larg); svg.setAttribute('height', alt);
+  por.forEach(n => {
+    n.el.style.left = n.x + 'px'; n.el.style.top = n.y + 'px';
+    if (!n.fio) return;
+    const p = por.get(n.pai);
+    n.fio.setAttribute('d', modo === 'vertical'
+      ? `M${p.x + W} ${p.y + H / 2} H${p.x + W + GXV / 2} V${n.y + H / 2} H${n.x}`
+      : LINHA.has(p.tipo)
+        ? `M${p.x + W / 2} ${p.y + H} V${p.y + H + GYL / 2} H${n.x + W / 2} V${n.y}`
+        : `M${p.x + 12} ${p.y + H} V${n.y + H / 2} H${n.x}`);
+  });
+  botaoModo.textContent = modo === 'horizontal' ? 'Ver estrutura na vertical' : 'Ver estrutura na horizontal';
+}
+function alternar() { /* troca o modo mantendo o nó selecionado em foco */
+  modo = modo === 'horizontal' ? 'vertical' : 'horizontal';
+  aplicarLayout();
+  if (atual) centrar(atual); else inicio();
+}
+botaoModo.addEventListener('click', alternar);
+aplicarLayout();
+
 /* seleção e caminho */
-let marcados = [];
+let marcados = [], atual = null;
 function selecionar(n) {
   marcados.forEach(([el, c]) => el.classList.remove(c)); marcados = [];
+  atual = n;
   const cadeia = [];
   for (let x = n; x; x = x.pai ? por.get(x.pai) : null) {
     cadeia.unshift(x);
@@ -157,8 +218,10 @@ function verTudo() {
   tx = (view.clientWidth - larg * k) / 2; ty = (view.clientHeight - alt * k) / 2; aplicar();
 }
 document.getElementById('ajusta').onclick = verTudo;
-function inicio() { /* abre legível, com a Presidência centralizada na vertical */
-  k = 0.7; tx = 24; ty = view.clientHeight / 2 - (raiz.y + H / 2) * k; aplicar();
+function inicio() { /* abre legível, com a Presidência em destaque */
+  if (modo === 'horizontal') { k = 0.6; tx = view.clientWidth / 2 - (raiz.x + W / 2) * k; ty = 24; }
+  else { k = 0.7; tx = 24; ty = view.clientHeight / 2 - (raiz.y + H / 2) * k; }
+  aplicar();
 }
 inicio();
 
@@ -207,12 +270,13 @@ function mostrar() {
   lista.hidden = false; campo.setAttribute('aria-expanded', 'true');
   if (achados.length) marcar(0);
 }
-function ir(n) { /* seleciona, centraliza e fecha a lista */
-  selecionar(n); fechar();
-  const nk = Math.max(k, 0.9);
+function centrar(n) {
   stage.classList.add('voo');
-  k = nk; tx = view.clientWidth / 2 - (n.x + W / 2) * k; ty = view.clientHeight / 2 - (n.y + H / 2) * k; aplicar();
+  k = Math.max(k, 0.9); tx = view.clientWidth / 2 - (n.x + W / 2) * k; ty = view.clientHeight / 2 - (n.y + H / 2) * k; aplicar();
   setTimeout(() => stage.classList.remove('voo'), 400);
+}
+function ir(n) { /* seleciona, centraliza e fecha a lista */
+  selecionar(n); fechar(); centrar(n);
 }
 campo.addEventListener('input', mostrar);
 campo.addEventListener('focus', () => { if (campo.value) mostrar(); });
@@ -232,6 +296,15 @@ document.addEventListener('click', e => { if (!e.target.closest('.busca')) fecha
     i.className = c; i.style.background = getComputedStyle(document.documentElement).getPropertyValue(
       {'t-diretoria': '--verde', 't-cg': '--verde3', 't-coord': '--claro', 't-div': '--amar', 't-centro': '--lil'}[c]);
     s.appendChild(i); s.appendChild(document.createTextNode(t)); document.getElementById('legenda').appendChild(s);
+  });
+}
+
+fetch('dados.json', {cache: 'no-cache'})
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(iniciar)
+  .catch(e => {
+    document.getElementById('caminho').textContent = 'Não foi possível carregar o dados.json (' + e.message + '). ' +
+      'Publique o site (ex.: GitHub Pages) ou abra por um servidor local, pois o navegador bloqueia a leitura de arquivos locais.';
   });
 </script>
 </body>
