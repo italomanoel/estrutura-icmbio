@@ -76,6 +76,10 @@ header button.modo{white-space:nowrap}
 /* Os dados ficam em dados.json (mesma pasta). Para mudar a estrutura, edite apenas o JSON. */
 function iniciar(DADOS) {
 
+if (!DADOS || !DADOS.length){
+  DADOS = retornaDadosEstrutura();
+};
+
 const W = 200, H = 50;          /* tamanho do nó */
 const GXL = 20, GYL = 44;       /* entre blocos lado a lado / entre pai e filhos em linha */
 const IND = 28, GYP = 8;        /* recuo e espaço dos filhos empilhados */
@@ -280,6 +284,176 @@ function centrar(n) {
 function ir(n) { /* seleciona, centraliza e fecha a lista */
   selecionar(n); fechar(); centrar(n);
 }
+
+/**
+ * Abrir o arquivo HTML diretamente com file://, devido às restrições de segurança do navegador (política de mesma origem), 
+ * o fetch pode falhar. Recomendado usar um servidor local (Live Server-vscode, http-server, ...).
+ * Com isso essa função de retorno do JSON caso não funcinar na página.
+*/
+function retornaDadosEstrutura() {
+  console.log("Dados buscados da função local.");
+  const dados = [
+    {"id": "presi", "pai": null, "sigla": "PRESI", "nome": "Presidência", "tipo": "presidencia"},
+    {"id": "secet", "pai": "presi", "sigla": "SECET", "nome": "Secretaria Executiva da Comissão de Ética", "tipo": "orgao"},
+    {"id": "pfe", "pai": "presi", "sigla": "PFE", "nome": "Procuradoria Federal Especializada", "tipo": "orgao"},
+    {"id": "asspres", "pai": "presi", "sigla": "Assessoria do Presidente", "nome": "Assessoria do Presidente", "tipo": "orgao"},
+    {"id": "corr", "pai": "presi", "sigla": "CORR", "nome": "Corregedoria", "tipo": "orgao"},
+    {"id": "diap", "pai": "corr", "sigla": "DIAP", "nome": "Divisão de Atos e Procedimentos", "tipo": "div"},
+    {"id": "daprev", "pai": "corr", "sigla": "DAPREV", "nome": "Divisão de Admissibilidade e Prevenção", "tipo": "div"},
+    {"id": "audit", "pai": "presi", "sigla": "AUDIT", "nome": "Auditoria Interna", "tipo": "orgao"},
+    {"id": "dpa", "pai": "audit", "sigla": "DPA", "nome": "Divisão de Processos de Auditoria", "tipo": "div"},
+    {"id": "ouv", "pai": "presi", "sigla": "OUV", "nome": "Ouvidoria", "tipo": "orgao"},
+    {"id": "dic", "pai": "ouv", "sigla": "DIC", "nome": "Divisão de Informações ao Cidadão", "tipo": "div"},
+    {"id": "gabin", "pai": "presi", "sigla": "GABIN", "nome": "Gabinete", "tipo": "orgao", "aliases": ["Gabinete da Presidência"]},
+    {"id": "cga", "pai": "gabin", "sigla": "CGA", "nome": "Coordenação de Gestão Administrativa do Gabinete", "tipo": "coord"},
+    {"id": "dpl", "pai": "gabin", "sigla": "DPL", "nome": "Divisão de Assuntos Parlamentares", "tipo": "div"},
+    {"id": "dai", "pai": "gabin", "sigla": "DAI", "nome": "Divisão de Assuntos Internacionais", "tipo": "div"},
+    {"id": "seag", "pai": "gabin", "sigla": "SEAG", "nome": "Serviço de Apoio ao Gabinete", "tipo": "serv"},
+    {"id": "cgge", "pai": "presi", "sigla": "CGGE", "nome": "Coordenação-Geral de Governança e Gestão Estratégica", "tipo": "cg"},
+    {"id": "cgov", "pai": "cgge", "sigla": "CGOV", "nome": "Coordenação de Governança", "tipo": "coord"},
+    {"id": "dpae", "pai": "cgge", "sigla": "DPAE", "nome": "Divisão de Planejamento e Avaliação da Estratégia", "tipo": "div"},
+    {"id": "dinfo", "pai": "cgge", "sigla": "DINFO", "nome": "Divisão de Gestão da Informação Institucional", "tipo": "div"},
+    {"id": "cgcs", "pai": "presi", "sigla": "CGCS", "nome": "Coordenação-Geral de Comunicação Social", "tipo": "cg"},
+    {"id": "ccom", "pai": "cgcs", "sigla": "CCOM", "nome": "Coordenação de Comunicação Social", "tipo": "coord"},
+    {"id": "disat", "pai": "presi", "sigla": "DISAT", "nome": "Diretoria de Ações Socioambientais e Consolidação Territorial em Unidades de Conservação", "tipo": "diretoria"},
+    {"id": "diman", "pai": "presi", "sigla": "DIMAN", "nome": "Diretoria de Criação e Manejo de Unidades de Conservação", "tipo": "diretoria"},
+    {"id": "dibio", "pai": "presi", "sigla": "DIBIO", "nome": "Diretoria de Pesquisa, Avaliação e Monitoramento da Biodiversidade", "tipo": "diretoria"},
+    {"id": "diplan", "pai": "presi", "sigla": "DIPLAN", "nome": "Diretoria de Planejamento, Administração e Logística", "tipo": "diretoria"},
+    {"id": "cotat", "pai": "disat", "sigla": "COTAT", "nome": "Coordenação de Assessoria Técnico e Administrativo", "tipo": "coord"},
+    {"id": "dap-cotat", "pai": "cotat", "sigla": "DAP-COTAT", "nome": "Divisão de Apoio Técnico", "tipo": "div"},
+    {"id": "cgpt", "pai": "disat", "sigla": "CGPT", "nome": "Coordenação-Geral de Articulação de Políticas Públicas e Economias da Sociobiodiversidade", "tipo": "cg"},
+    {"id": "cobem", "pai": "cgpt", "sigla": "COBEM", "nome": "Coordenação de Informações para o Bem-Viver", "tipo": "coord"},
+    {"id": "copact", "pai": "cgpt", "sigla": "COPACT", "nome": "Coordenação de Articulação de Políticas Públicas", "tipo": "coord", "aliases": ["COPCT"]},
+    {"id": "coecos", "pai": "cgpt", "sigla": "COECOS", "nome": "Coordenação de Promoção das Economias da Sociobiodiversidade", "tipo": "coord"},
+    {"id": "dimaco", "pai": "coecos", "sigla": "DIMACO", "nome": "Divisão de Manejo Florestal Comunitário", "tipo": "div"},
+    {"id": "copesc", "pai": "cgpt", "sigla": "COPESC", "nome": "Coordenação de Pesca Artesanal", "tipo": "coord"},
+    {"id": "cgsam", "pai": "disat", "sigla": "CGSAM", "nome": "Coordenação-Geral de Gestão Socioambiental", "tipo": "cg"},
+    {"id": "cocar", "pai": "cgsam", "sigla": "COCAR", "nome": "Coordenação de Caracterização de Povos e Comunidades em Unidades de Conservação", "tipo": "coord"},
+    {"id": "coedu", "pai": "cgsam", "sigla": "COEDU", "nome": "Coordenação de Educação Ambiental e Formação Cidadã", "tipo": "coord"},
+    {"id": "cocep", "pai": "cgsam", "sigla": "COCEP", "nome": "Coordenação de Promoção da Participação Social", "tipo": "coord"},
+    {"id": "divol", "pai": "cocep", "sigla": "DIVOL", "nome": "Divisão de Programas de Voluntariado", "tipo": "div"},
+    {"id": "cogcot", "pai": "cgsam", "sigla": "COGCOT", "nome": "Coordenação de Gestão de Conflitos em Interfaces Territoriais", "tipo": "coord", "aliases": ["COCDOT"]},
+    {"id": "dimoa", "pai": "cogcot", "sigla": "DIMOA", "nome": "Divisão de Monitoramento e Acompanhamento de Acordos", "tipo": "div"},
+    {"id": "cgter", "pai": "disat", "sigla": "CGTER", "nome": "Coordenação-Geral de Consolidação Territorial", "tipo": "cg"},
+    {"id": "ccol", "pai": "cgter", "sigla": "CCOL", "nome": "Coordenação de Consolidação de Limites", "tipo": "coord"},
+    {"id": "sop-cgter", "pai": "cgter", "sigla": "SOP-CGTER", "nome": "Serviço de Apoio Operacional", "tipo": "serv"},
+    {"id": "cocef", "pai": "cgter", "sigla": "COCEF", "nome": "Coordenação de Análise e Gestão de Dados Fundiários", "tipo": "coord"},
+    {"id": "codim", "pai": "cgter", "sigla": "CODIM", "nome": "Coordenação de Desapropriação de Imóveis", "tipo": "coord"},
+    {"id": "coin", "pai": "cgter", "sigla": "COIN", "nome": "Coordenação de Incorporação de Imóveis", "tipo": "coord"},
+    {"id": "diter", "pai": "coin", "sigla": "DITER", "nome": "Divisão de Incorporação de Terras Públicas", "tipo": "div"},
+    {"id": "cotam", "pai": "diman", "sigla": "COTAM", "nome": "Coordenação de Assessoramento Técnico e Administrativo", "tipo": "coord"},
+    {"id": "dat-cotam", "pai": "cotam", "sigla": "DAT/COTAM", "nome": "Divisão de Apoio Técnico", "tipo": "div"},
+    {"id": "cgcap", "pai": "diman", "sigla": "CGCAP", "nome": "Coordenação-Geral de Criação, Planejamento e Avaliação de Unidades de Conservação", "tipo": "cg"},
+    {"id": "cocuc", "pai": "cgcap", "sigla": "COCUC", "nome": "Coordenação de Criação de UC's", "tipo": "coord"},
+    {"id": "coman", "pai": "cgcap", "sigla": "COMAN", "nome": "Coordenação de Plano de Manejo de UC", "tipo": "coord"},
+    {"id": "dmop", "pai": "cgcap", "sigla": "DMOP", "nome": "Divisão de Monitoramento de Planos de Manejo", "tipo": "div"},
+    {"id": "dad-cgcap", "pai": "cgcap", "sigla": "DAD-CGCAP", "nome": "Divisão de Apoio Administrativo", "tipo": "div"},
+    {"id": "dat-cgcap", "pai": "cgcap", "sigla": "DAT-CGCAP", "nome": "Divisão de Apoio Técnico", "tipo": "div"},
+    {"id": "dgti", "pai": "cgcap", "sigla": "DGTI", "nome": "Divisão de Gestão Territorial Integrada", "tipo": "div"},
+    {"id": "cgeup", "pai": "diman", "sigla": "CGEUP", "nome": "Coordenação-Geral de Uso Público e Serviços Ambientais", "tipo": "cg"},
+    {"id": "covis", "pai": "cgeup", "sigla": "COVIS", "nome": "Coordenação de Planejamento da Visitação", "tipo": "coord"},
+    {"id": "coest", "pai": "cgeup", "sigla": "COEST", "nome": "Coordenação de Estruturação e Qualificação da Visitação", "tipo": "coord"},
+    {"id": "codel", "pai": "cgeup", "sigla": "CODEL", "nome": "Coordenação de Estruturação de Delegação de Serviços de Apoio à Visitação", "tipo": "coord"},
+    {"id": "coged", "pai": "cgeup", "sigla": "COGED", "nome": "Coordenação de Gestão de Instrumentos de Delegações", "tipo": "coord"},
+    {"id": "dtuc", "pai": "cgeup", "sigla": "DTUC", "nome": "Divisão de Turismo de Base Comunitária", "tipo": "div"},
+    {"id": "dsam", "pai": "cgeup", "sigla": "DSAM", "nome": "Divisão de Serviços Ambientais", "tipo": "div"},
+    {"id": "dflo", "pai": "cgeup", "sigla": "DFLO", "nome": "Divisão de Negócios Florestais", "tipo": "div"},
+    {"id": "dginf", "pai": "cgeup", "sigla": "DGINF", "nome": "Divisão de Gestão da Informação de Uso Público", "tipo": "div"},
+    {"id": "cgpro", "pai": "diman", "sigla": "CGPRO", "nome": "Coordenação-Geral de Proteção", "tipo": "cg"},
+    {"id": "cofis", "pai": "cgpro", "sigla": "COFIS", "nome": "Coordenação de Fiscalização", "tipo": "coord"},
+    {"id": "dint", "pai": "cofis", "sigla": "DINT", "nome": "Divisão de Inteligência Ambiental", "tipo": "div"},
+    {"id": "dgeo", "pai": "cgpro", "sigla": "DGEO", "nome": "Divisão de Monitoramento Geoespacial", "tipo": "div"},
+    {"id": "ciam", "pai": "cgpro", "sigla": "CIAM", "nome": "Coordenação de Apuração de Infrações Ambientais", "tipo": "coord"},
+    {"id": "djai", "pai": "cgpro", "sigla": "DJAI", "nome": "Divisão de Julgamento de Autos de Infração", "tipo": "div"},
+    {"id": "copro", "pai": "cgpro", "sigla": "COPRO", "nome": "Coordenação de Operação da Proteção Ambiental", "tipo": "coord"},
+    {"id": "diva", "pai": "copro", "sigla": "DIVA", "nome": "Divisão Aérea", "tipo": "div"},
+    {"id": "sepro", "pai": "copro", "sigla": "SEPRO", "nome": "Serviço de Operacionalização da Proteção", "tipo": "serv"},
+    {"id": "cemif", "pai": "cgpro", "sigla": "CEMIF", "nome": "Centro Especializado em Manejo Integrado do Fogo", "tipo": "centro", "obs": "No Decreto 12.258/2024 os Centros aparecem entre as unidades descentralizadas; aqui segue o desenho (sob a CGPRO)"},
+    {"id": "dico", "pai": "cemif", "sigla": "DICO", "nome": "Divisão de Gestão do Conhecimento", "tipo": "div"},
+    {"id": "cotab", "pai": "dibio", "sigla": "COTAB", "nome": "Coordenação de Assessoramento Técnico e Administrativo", "tipo": "coord"},
+    {"id": "dad-cotab", "pai": "cotab", "sigla": "DAD-COTAB", "nome": "Divisão de Apoio Administrativo", "tipo": "div"},
+    {"id": "centros-dibio", "pai": "dibio", "sigla": null, "nome": "Centros (14)", "tipo": "grupo"},
+    {"id": "cemave", "pai": "centros-dibio", "sigla": "CEMAVE", "nome": "Centro Nacional de Pesquisa e Conservação de Aves Silvestres", "tipo": "centro"},
+    {"id": "ran", "pai": "centros-dibio", "sigla": "RAN", "nome": "Centro Nacional de Pesquisa e Conservação de Répteis e Anfíbios", "tipo": "centro"},
+    {"id": "cenap", "pai": "centros-dibio", "sigla": "CENAP", "nome": "Centro Nacional de Pesquisa e Conservação de Mamíferos Carnívoros", "tipo": "centro"},
+    {"id": "cpb", "pai": "centros-dibio", "sigla": "CPB", "nome": "Centro Nacional de Pesquisa e Conservação de Primatas e Xenartros", "tipo": "centro"},
+    {"id": "cecav", "pai": "centros-dibio", "sigla": "CECAV", "nome": "Centro Nacional de Pesquisa e Conservação de Cavernas", "tipo": "centro", "obs": "Imagem da DIBIO mostra CECAVE; sigla CECAV conforme JSON enviado"},
+    {"id": "cepta", "pai": "centros-dibio", "sigla": "CEPTA", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Aquática Continental", "tipo": "centro"},
+    {"id": "cepam", "pai": "centros-dibio", "sigla": "CEPAM", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Amazônica", "tipo": "centro"},
+    {"id": "cbc", "pai": "centros-dibio", "sigla": "CBC", "nome": "Centro Nacional de Pesquisa e Conservação em Biodiversidade e Restauração Ecológica", "tipo": "centro"},
+    {"id": "cepsul", "pai": "centros-dibio", "sigla": "CEPSUL", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Marinha do Sudeste e Sul", "tipo": "centro"},
+    {"id": "tamar", "pai": "centros-dibio", "sigla": "TAMAR", "nome": "Centro Nacional de Pesquisa e Conservação de Tartarugas Marinhas e da Biodiversidade Marinha do Leste", "tipo": "centro"},
+    {"id": "cma", "pai": "centros-dibio", "sigla": "CMA", "nome": "Centro Nacional de Pesquisa e Conservação de Mamíferos Aquáticos", "tipo": "centro"},
+    {"id": "cepene", "pai": "centros-dibio", "sigla": "CEPENE", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Marinha do Nordeste", "tipo": "centro"},
+    {"id": "cepnor", "pai": "centros-dibio", "sigla": "CEPNOR", "nome": "Centro Nacional de Pesquisa e Conservação da Biodiversidade Marinha do Norte", "tipo": "centro"},
+    {"id": "cnpt", "pai": "centros-dibio", "sigla": "CNPT", "nome": "Centro Nacional de Pesquisa e Conservação da Sociobiodiversidade Associada a Povos e Comunidades Tradicionais", "tipo": "centro"},
+    {"id": "cgimp", "pai": "dibio", "sigla": "CGIMP", "nome": "Coordenação-Geral de Avaliação de Impactos", "tipo": "cg"},
+    {"id": "coad", "pai": "cgimp", "sigla": "COAD", "nome": "Coordenação de Apoio às Autorizações Diretas", "tipo": "coord"},
+    {"id": "coginf", "pai": "cgimp", "sigla": "COGINF", "nome": "Coordenação de Gestão da Informação para o Licenciamento Ambiental", "tipo": "coord"},
+    {"id": "comali", "pai": "cgimp", "sigla": "COMALI", "nome": "Coordenação de Manifestação para o Licenciamento Ambiental", "tipo": "coord"},
+    {"id": "cgpeq", "pai": "dibio", "sigla": "CGPEQ", "nome": "Coordenação-Geral de Pesquisa e Monitoramento da Biodiversidade", "tipo": "cg"},
+    {"id": "copeg", "pai": "cgpeq", "sigla": "COPEG", "nome": "Coordenação de Pesquisa e Gestão da Informação Sobre Biodiversidade", "tipo": "coord"},
+    {"id": "dit-copeg", "pai": "copeg", "sigla": "DIT-COPEG", "nome": "Divisão de Inovação Tecnológica", "tipo": "div"},
+    {"id": "coece", "pai": "cgpeq", "sigla": "COECE", "nome": "Coordenação de Emergências Climáticas e Epizootia", "tipo": "coord"},
+    {"id": "comob", "pai": "cgpeq", "sigla": "COMOB", "nome": "Coordenação de Monitoramento da Biodiversidade", "tipo": "coord"},
+    {"id": "cgcon", "pai": "dibio", "sigla": "CGCON", "nome": "Coordenação-Geral de Estratégias Para a Conservação", "tipo": "cg"},
+    {"id": "cmeei", "pai": "cgcon", "sigla": "CMEEI", "nome": "Coordenação de Manejo de Espécies Exóticas Invasoras", "tipo": "coord"},
+    {"id": "copan", "pai": "cgcon", "sigla": "COPAN", "nome": "Coordenação de Identificação e Planejamento de Ações para Conservação", "tipo": "coord"},
+    {"id": "dicon", "pai": "copan", "sigla": "DICON", "nome": "Divisão de Apoio à Implementação de Ações de Conservação", "tipo": "div"},
+    {"id": "cofau", "pai": "cgcon", "sigla": "COFAU", "nome": "Coordenação de Avaliação do Risco de Extinção de Espécies da Fauna", "tipo": "coord"},
+    {"id": "coesp", "pai": "cgcon", "sigla": "COESP", "nome": "Coordenação de Análises Geoespaciais para Conservação de Espécies", "tipo": "coord"},
+    {"id": "coasa", "pai": "diplan", "sigla": "COASA", "nome": "Coordenação de Assessoramento Administrativo", "tipo": "coord"},
+    {"id": "dap", "pai": "coasa", "sigla": "DAP", "nome": "Divisão de Apoio Técnico", "tipo": "div"},
+    {"id": "cgti", "pai": "diplan", "sigla": "CGTI", "nome": "Coordenação-Geral de Tecnologia da Informação", "tipo": "cg"},
+    {"id": "cosd", "pai": "cgti", "sigla": "COSD", "nome": "Coordenação de Soluções Digitais", "tipo": "coord"},
+    {"id": "sinf", "pai": "cosd", "sigla": "SINF", "nome": "Serviço de Sistema de Informação", "tipo": "serv"},
+    {"id": "sisup", "pai": "cgti", "sigla": "SISUP", "nome": "Serviço de Infraestrutura e Suporte", "tipo": "serv"},
+    {"id": "cgadm", "pai": "diplan", "sigla": "CGADM", "nome": "Coordenação-Geral de Gestão Administrativa", "tipo": "cg"},
+    {"id": "clog", "pai": "cgadm", "sigla": "CLOG", "nome": "Coordenação de Logística", "tipo": "coord"},
+    {"id": "dfrot", "pai": "clog", "sigla": "DFROT", "nome": "Divisão de Gestão de Frotas", "tipo": "div"},
+    {"id": "dpat-patrimonio", "pai": "clog", "sigla": "DPAT", "nome": "Divisão de Patrimônio", "tipo": "div"},
+    {"id": "copea", "pai": "cgadm", "sigla": "COPEA", "nome": "Coordenação de Obras e Projetos de Engenharia e Arquitetura", "tipo": "coord"},
+    {"id": "dfpea", "pai": "copea", "sigla": "DFPEA", "nome": "Divisão de Fiscalização de Obras e Projetos de Engenharia e Arquitetura", "tipo": "div"},
+    {"id": "colic", "pai": "cgadm", "sigla": "COLIC", "nome": "Coordenação de Licitações e Contratos", "tipo": "coord"},
+    {"id": "dfis", "pai": "colic", "sigla": "DFIS", "nome": "Divisão de Fiscalização Administrativa", "tipo": "div"},
+    {"id": "dllc", "pai": "colic", "sigla": "DLLC", "nome": "Divisão de Licitações", "tipo": "div"},
+    {"id": "dcad", "pai": "colic", "sigla": "DCAD", "nome": "Divisão de Contratos Administrativos", "tipo": "div"},
+    {"id": "dconv", "pai": "cgadm", "sigla": "DCONV", "nome": "Divisão de Convênios e Apoio às Parcerias", "tipo": "div"},
+    {"id": "sepad", "pai": "colic", "sigla": "SEPAD", "nome": "Setor de Penalidades Administrativas", "tipo": "setor", "obs": "Não consta nas imagens; incluído conforme informação do usuário"},
+    {"id": "cgfin", "pai": "diplan", "sigla": "CGFIN", "nome": "Coordenação-Geral de Finanças e Arrecadação", "tipo": "cg"},
+    {"id": "cont", "pai": "cgfin", "sigla": "CONT", "nome": "Coordenação de Contabilidade", "tipo": "coord"},
+    {"id": "seacon", "pai": "cont", "sigla": "SEACON", "nome": "Serviço de Análise Contábil", "tipo": "serv"},
+    {"id": "cofin", "pai": "cgfin", "sigla": "COFIN", "nome": "Coordenação de Finanças e Arrecadação", "tipo": "coord"},
+    {"id": "diarr-1", "pai": "cofin", "sigla": "DIARR", "nome": "Divisão de Arrecadação", "tipo": "div"},
+    {"id": "diarr-2", "pai": "cofin", "sigla": "DIARR", "nome": "Divisão de Arrecadação", "tipo": "div"},
+    {"id": "coor", "pai": "cgfin", "sigla": "COOR", "nome": "Coordenação de Orçamento", "tipo": "coord"},
+    {"id": "deor", "pai": "coor", "sigla": "DEOR", "nome": "Divisão de Execução Orçamentária", "tipo": "div"},
+    {"id": "cgplan", "pai": "diplan", "sigla": "CGPLAN", "nome": "Coordenação-Geral de Planejamento e Gestão de Recursos Externos", "tipo": "cg"},
+    {"id": "cogep", "pai": "cgplan", "sigla": "COGEP", "nome": "Coordenação de Gestão de Projetos e Parcerias", "tipo": "coord"},
+    {"id": "sejud", "pai": "cogep", "sigla": "SEJUD", "nome": "Serviço de Execuções de Projetos e Parcerias", "tipo": "serv"},
+    {"id": "dpar", "pai": "cogep", "sigla": "DPAR", "nome": "Divisão de Projetos e Parcerias", "tipo": "div"},
+    {"id": "comag", "pai": "cgplan", "sigla": "COMAG", "nome": "Coordenação de Monitoramento e Avaliação da Gestão de UC", "tipo": "coord"},
+    {"id": "seprex", "pai": "comag", "sigla": "SEPREX", "nome": "Serviço de Planejamento de Recursos Externos", "tipo": "serv"},
+    {"id": "cocam", "pai": "cgplan", "sigla": "COCAM", "nome": "Coordenação de Compensação Ambiental", "tipo": "coord"},
+    {"id": "decam", "pai": "cocam", "sigla": "DECAM", "nome": "Divisão de Execução de Compensação Ambiental", "tipo": "div"},
+    {"id": "dececam", "pai": "cocam", "sigla": "DECECAM", "nome": "Divisão de Celebração e Acompanhamento Financeiro da Compensação Ambiental", "tipo": "div"},
+    {"id": "cggp", "pai": "diplan", "sigla": "CGGP", "nome": "Coordenação-Geral de Gestão de Pessoas", "tipo": "cg"},
+    {"id": "coape", "pai": "cggp", "sigla": "COAPE", "nome": "Coordenação de Administração de Pessoal", "tipo": "coord"},
+    {"id": "dpat-agentes", "pai": "coape", "sigla": "DPAT", "nome": "Divisão de Agentes Temporários Ambientais", "tipo": "div"},
+    {"id": "dipag", "pai": "coape", "sigla": "DIPAG", "nome": "Divisão de Pagamento", "tipo": "div"},
+    {"id": "dicape", "pai": "coape", "sigla": "DICAPE", "nome": "Divisão de Cadastro", "tipo": "div"},
+    {"id": "cocage", "pai": "cggp", "sigla": "COCAGE", "nome": "Coordenação de Carreira e Gestão Estratégica de Pessoas", "tipo": "coord"},
+    {"id": "seqvt", "pai": "cocage", "sigla": "SEQVT", "nome": "Serviço de Qualidade de Vida", "tipo": "serv"},
+    {"id": "dgeft", "pai": "cocage", "sigla": "DGEFT", "nome": "Divisão de Gestão da Força de Trabalho", "tipo": "div"},
+    {"id": "acadebio", "pai": "cggp", "sigla": "ACADEBio", "nome": "Centro de Formação em Conservação da Biodiversidade", "tipo": "centro"},
+    {"id": "deape", "pai": "acadebio", "sigla": "DEAPE", "nome": "Divisão de Educação Corporativa e Desenvolvimento de Pessoas", "tipo": "div"},
+    {"id": "dgadm-acadebio", "pai": "acadebio", "sigla": "DGADM/ACADEBio", "nome": "Divisão de Gestão Administrativa", "tipo": "div"},
+    {"id": "sead", "pai": "acadebio", "sigla": "SEAD", "nome": "Setor de Educação à Distância", "tipo": "setor"},
+    {"id": "seinf", "pai": "acadebio", "sigla": "SEINF", "nome": "Setor de Infraestrutura", "tipo": "setor"}
+  ];
+  return dados;
+}
+
 campo.addEventListener('input', mostrar);
 campo.addEventListener('focus', () => { if (campo.value) mostrar(); });
 campo.addEventListener('keydown', e => {
@@ -300,7 +474,7 @@ document.addEventListener('click', e => { if (!e.target.closest('.busca')) fecha
     s.appendChild(i); s.appendChild(document.createTextNode(t)); document.getElementById('legenda').appendChild(s);
   });
 }
-
+/* Busca dos dados da estrutura no JSON */
 fetch('dados.json', {cache: 'no-cache'})
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(iniciar)
